@@ -61,7 +61,7 @@ expr
 
   // highest precedence operators
   | expr (EXPR_DOT EXPR_SYMBOL)+ // access element
-  | expr (EXPR_BUILTIN_START builtin)+
+  | expr (EXPR_QUESTION builtin)+
   | expr EXPR_L_PAREN (expr (EXPR_COMMA expr)* )? EXPR_R_PAREN
   | EXPR_L_PAREN expr EXPR_R_PAREN
 
@@ -83,7 +83,7 @@ expr
   ;
 
 builtin
-  : BUILT_IN
+  : EXPR_SYMBOL
   ;
 
 struct

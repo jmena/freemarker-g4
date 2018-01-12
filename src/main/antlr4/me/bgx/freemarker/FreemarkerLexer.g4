@@ -38,7 +38,7 @@ EXPR_COMENT           : COMMENT_FRAG -> skip;
 EXPR_STRUCT           : '{'+ -> pushMode(EXPR_MODE);
 EXPR_DOUBLE_STR_START : '"' -> pushMode(DOUBLE_QUOTE_STRING_MODE);
 EXPR_SINGLE_STR_START : '\'' -> pushMode(SINGLE_QUOTE_STRING_MODE);
-EXPR_BUILTIN_START    : '?' -> pushMode(BUILTIN_START);
+EXPR_QUESTION         : '?';
 EXPR_BANG             : '!';
 EXPR_EQ               : '=';
 EXPR_ADD              : '+';
@@ -54,9 +54,6 @@ EXPR_DOT              : '.';
 EXPR_COMMA            : ',';
 EXPR_COLON            : ':';
 EXPR_SYMBOL           : SYMBOL;
-
-mode BUILTIN_START;
-BUILT_IN: SYMBOL -> popMode;
 
 // FRAGMENTS
 fragment COMMENT_FRAG : '<#--' .*? '-->';
