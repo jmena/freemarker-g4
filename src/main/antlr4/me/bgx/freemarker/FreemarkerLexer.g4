@@ -6,18 +6,20 @@ COMMENT             : COMMENT_FRAG -> skip;
 START_DIRECTIVE_TAG : '<#' -> pushMode(EXPR_MODE);
 END_DIRECTIVE_TAG   : '</#' -> pushMode(EXPR_MODE);
 INLINE_EXPR_START   : '${' -> pushMode(EXPR_MODE);
-CONTENT             : ('<' | '$' | ~[$<]+) ; // TODO: fix escaping \$
+CONTENT             : ('<' | '$' | ~[$<]+) ;
 
 // MODES
 mode DOUBLE_QUOTE_STRING_MODE;
 DQS_EXIT       : '"' -> popMode;
+DQS_ESCAPE     : '\\' [\\"$n];
 DQS_ENTER_EXPR : '${' -> pushMode(EXPR_MODE);
-DQS_CONTENT    : (~[$"])+; // TODO: fix escaping \"
+DQS_CONTENT    : (~[\\$"])+;
 
 mode SINGLE_QUOTE_STRING_MODE;
 SQS_EXIT       : '\'' -> popMode;
+SQS_ESCAPE     : '\\' [\\'$n];
 SQS_ENTER_EXPR : '${' -> pushMode(EXPR_MODE);
-SQS_CONTENT    : (~[$'])+; // TODO: fix escaping \'
+SQS_CONTENT    : (~[\\$'])+;
 
 mode EXPR_MODE;
 // Keywords
