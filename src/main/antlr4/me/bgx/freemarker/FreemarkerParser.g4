@@ -125,10 +125,6 @@ expr
   | expr EXPR_LOGICAL_OR expr
   ;
 
-//builtin
-//  : EXPR_SYMBOL
-//  ;
-
 struct
   : EXPR_STRUCT (struct_pair (EXPR_COMMA struct_pair)*)? EXPR_EXIT_R_BRACE
   ;
