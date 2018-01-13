@@ -5,6 +5,8 @@ lexer grammar FreemarkerLexer;
 COMMENT             : COMMENT_FRAG -> skip;
 START_DIRECTIVE_TAG : '<#' -> pushMode(EXPR_MODE);
 END_DIRECTIVE_TAG   : '</#' -> pushMode(EXPR_MODE);
+START_USER_DIR_TAG  : '<@' -> pushMode(EXPR_MODE);
+END_USER_DIR_TAG    : '</@' -> pushMode(EXPR_MODE);
 INLINE_EXPR_START   : '${' -> pushMode(EXPR_MODE);
 CONTENT             : ('<' | '$' | ~[$<]+) ;
 
@@ -31,15 +33,22 @@ EXPR_AS               : 'as';
 EXPR_LIST             : 'list';
 EXPR_TRUE             : 'true';
 EXPR_FALSE            : 'false';
+EXPR_INCLUDE          : 'include';
+EXPR_IMPORT           : 'import';
+EXPR_MACRO            : 'macro';
+EXPR_NESTED           : 'nested';
+EXPR_RETURN           : 'return';
 // Other symbols
 EXPR_NUM              : NUMBER;
 EXPR_EXIT_R_BRACE     : '}' -> popMode;
 EXPR_EXIT_GT          : '>' -> popMode;
+EXPR_EXIT_DIV_GT      : '/>' -> popMode;
 EXPR_WS               : [ ]+ -> skip;
 EXPR_COMENT           : COMMENT_FRAG -> skip;
 EXPR_STRUCT           : '{'+ -> pushMode(EXPR_MODE);
 EXPR_DOUBLE_STR_START : '"' -> pushMode(DOUBLE_QUOTE_STRING_MODE);
 EXPR_SINGLE_STR_START : '\'' -> pushMode(SINGLE_QUOTE_STRING_MODE);
+EXPR_AT               : '@';
 EXPR_QUESTION         : '?';
 EXPR_BANG             : '!';
 EXPR_EQ               : '=';
@@ -49,12 +58,15 @@ EXPR_MUL              : '*';
 EXPR_DIV              : '/';
 EXPR_L_PAREN          : '(';
 EXPR_R_PAREN          : ')';
+EXPR_L_SQ_PAREN       : '[';
+EXPR_R_SQ_PAREN       : ']';
 EXPR_COMPARE_EQ       : '==';
 EXPR_LOGICAL_AND      : '&&';
 EXPR_LOGICAL_OR       : '||';
 EXPR_DOT              : '.';
 EXPR_COMMA            : ',';
 EXPR_COLON            : ':';
+EXPR_SEMICOLON        : ';';
 EXPR_SYMBOL           : SYMBOL;
 
 // FRAGMENTS

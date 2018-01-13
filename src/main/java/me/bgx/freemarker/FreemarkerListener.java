@@ -7,7 +7,7 @@ public class FreemarkerListener extends FreemarkerParserBaseListener {
     }
 
     @Override
-    public void enterIfDirective(final FreemarkerParser.IfDirectiveContext ctx) {
+    public void enterDirectiveIf(final FreemarkerParser.DirectiveIfContext ctx) {
         System.out.println("if expr: " + ctx.tagExpr().expr().getText());
     }
 }
