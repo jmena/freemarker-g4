@@ -123,7 +123,7 @@ expr
   // highest precedence operators
   | expr (EXPR_DOT EXPR_SYMBOL)+                                  # ExprDotAccess
   | expr (EXPR_QUESTION EXPR_SYMBOL)+                             # ExprBuiltIn
-  | expr EXPR_L_PAREN (args=expr (EXPR_COMMA args=expr)* )? EXPR_R_PAREN    # ExprFunctionCall
+  | funExpr=expr EXPR_L_PAREN (firstArg=expr (EXPR_COMMA restArgs=expr)* )? EXPR_R_PAREN    # ExprFunctionCall
   | expr EXPR_L_SQ_PAREN expr EXPR_R_SQ_PAREN                     # ExprSquareParentheses
   | EXPR_L_PAREN expr EXPR_R_PAREN                                # ExprRoundParentheses
 
