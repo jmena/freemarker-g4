@@ -45,6 +45,8 @@ SQS_ENTER_EXPR : '${' -> pushMode(EXPR_MODE);
 SQS_CONTENT    : (~[\\$'])+;
 
 mode EXPR_MODE;
+// Ignore
+EXPR_IGNORE           : '\n' -> skip;
 // Keywords
 EXPR_IF               : 'if';
 EXPR_ELSE             : 'else';
