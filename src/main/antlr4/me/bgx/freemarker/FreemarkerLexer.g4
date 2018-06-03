@@ -45,8 +45,6 @@ SQS_ENTER_EXPR : '${' -> pushMode(EXPR_MODE);
 SQS_CONTENT    : (~[\\$'])+;
 
 mode EXPR_MODE;
-// Ignore
-EXPR_IGNORE           : '\n' -> skip;
 // Keywords
 EXPR_IF               : 'if';
 EXPR_ELSE             : 'else';
@@ -66,7 +64,7 @@ EXPR_NUM              : NUMBER;
 EXPR_EXIT_R_BRACE     : '}' -> popMode;
 EXPR_EXIT_GT          : '>' -> popMode;
 EXPR_EXIT_DIV_GT      : '/>' -> popMode;
-EXPR_WS               : [ ]+ -> skip;
+EXPR_WS               : [ \n]+ -> skip;
 EXPR_COMENT           : COMMENT_FRAG -> skip;
 EXPR_STRUCT           : '{'+ -> pushMode(EXPR_MODE);
 EXPR_DOUBLE_STR_START : '"' -> pushMode(DOUBLE_QUOTE_STRING_MODE);
