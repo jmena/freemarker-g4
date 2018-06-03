@@ -148,7 +148,7 @@ struct
   : EXPR_STRUCT (struct_pair (EXPR_COMMA struct_pair)*)? EXPR_EXIT_R_BRACE
   ;
 
-struct_pair: string EXPR_COLON expr;
+struct_pair: (string | EXPR_SYMBOL) EXPR_COLON expr;
 
 single_quote_string
   : EXPR_SINGLE_STR_START (SQS_CONTENT | SQS_ESCAPE | SQS_ENTER_EXPR expr EXPR_EXIT_R_BRACE)* SQS_EXIT
