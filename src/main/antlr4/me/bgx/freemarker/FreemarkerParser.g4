@@ -123,7 +123,7 @@ expr
   // highest precedence operators
   | expr (EXPR_DOT EXPR_SYMBOL)+                                  # ExprDotAccess
   | expr EXPR_QUESTION EXPR_QUESTION                              # ExprMissingTest
-  | expr (EXPR_QUESTION EXPR_SYMBOL)+                             # ExprBuiltIn
+  | expr EXPR_QUESTION EXPR_SYMBOL (EXPR_L_PARENT functionParams EXPR_R_PAREN)?             # ExprBuiltIn
   | funExpr=expr EXPR_L_PAREN (firstArg=expr (EXPR_COMMA restArgs=expr)* )? EXPR_R_PAREN    # ExprFunctionCall
   | expr EXPR_L_SQ_PAREN expr EXPR_R_SQ_PAREN                     # ExprSquareParentheses
   | EXPR_L_PAREN expr EXPR_R_PAREN                                # ExprRoundParentheses
@@ -143,6 +143,12 @@ expr
   // logical "and" an "or" operators
   | expr EXPR_LOGICAL_AND expr         # ExprBoolAnd
   | expr EXPR_LOGICAL_OR expr          # ExprBoolOr
+  ;
+
+functionParams
+  : /* empty */
+  | expr
+  | expr (EXPR_COMMA expr)+
   ;
 
 struct
