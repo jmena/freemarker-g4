@@ -125,7 +125,7 @@ expr
   | expr EXPR_QUESTION EXPR_QUESTION                              # ExprMissingTest
   | expr EXPR_QUESTION EXPR_SYMBOL (EXPR_L_PARENT functionParams EXPR_R_PAREN)?             # ExprBuiltIn
   | left=expr EXPR_BANG right=expr?                                                         # ExprDefault
-  | funExpr=expr EXPR_L_PAREN (firstArg=expr (EXPR_COMMA restArgs=expr)* )? EXPR_R_PAREN    # ExprFunctionCall
+  | expr EXPR_L_PAREN functionParams EXPR_R_PAREN                 # ExprFunctionCall
   | expr EXPR_L_SQ_PAREN expr EXPR_R_SQ_PAREN                     # ExprSquareParentheses
   | EXPR_L_PAREN expr EXPR_R_PAREN                                # ExprRoundParentheses
 
