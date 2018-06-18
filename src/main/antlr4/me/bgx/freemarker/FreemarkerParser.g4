@@ -94,10 +94,10 @@ directiveReturn
   ;
 
 directiveUser
-  : START_USER_DIR_TAG EXPR_SYMBOL directiveUserParams EXPR_EXIT_DIV_GT     # DirUserEmptyBody
-  | START_USER_DIR_TAG EXPR_SYMBOL directiveUserParams EXPR_EXIT_GT
+  : START_USER_DIR_TAG EXPR_SYMBOL (EXPR_DOT EXPR_SYMBOL)* directiveUserParams EXPR_EXIT_DIV_GT     # DirUserEmptyBody
+  | START_USER_DIR_TAG EXPR_SYMBOL (EXPR_DOT EXPR_SYMBOL)* directiveUserParams EXPR_EXIT_GT
     elements
-    END_USER_DIR_TAG EXPR_SYMBOL (EXPR_SYMBOL EXPR_EQ expr)* EXPR_EXIT_GT   # DirUserWithBody
+    END_USER_DIR_TAG EXPR_SYMBOL (EXPR_DOT EXPR_SYMBOL)* EXPR_EXIT_GT                   # DirUserWithBody
   ;
 
 directiveUserParams
