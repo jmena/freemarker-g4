@@ -129,13 +129,13 @@ expr
   | struct         # StructExpr
 
   // highest precedence operators
-  | expr (EXPR_DOT EXPR_SYMBOL)+                                  # ExprDotAccess
-  | expr EXPR_QUESTION EXPR_QUESTION                              # ExprMissingTest
-  | expr EXPR_QUESTION EXPR_SYMBOL (EXPR_L_PARENT functionParams EXPR_R_PAREN)?             # ExprBuiltIn
-  | left=expr EXPR_BANG right=expr?                                                         # ExprDefault
-  | expr EXPR_L_PAREN functionParams EXPR_R_PAREN                 # ExprFunctionCall
-  | expr EXPR_L_SQ_PAREN expr EXPR_R_SQ_PAREN                     # ExprSquareParentheses
-  | EXPR_L_PAREN expr EXPR_R_PAREN                                # ExprRoundParentheses
+  | expr (EXPR_DOT EXPR_SYMBOL)+                                               # ExprDotAccess
+  | expr EXPR_QUESTION EXPR_QUESTION                                           # ExprMissingTest
+  | expr EXPR_QUESTION EXPR_SYMBOL (EXPR_L_PAREN functionParams EXPR_R_PAREN)? # ExprBuiltIn
+  | left=expr EXPR_BANG right=expr?                                            # ExprDefault
+  | expr EXPR_L_PAREN functionParams EXPR_R_PAREN                              # ExprFunctionCall
+  | expr EXPR_L_SQ_PAREN expr EXPR_R_SQ_PAREN                                  # ExprSquareParentheses
+  | EXPR_L_PAREN expr EXPR_R_PAREN                                             # ExprRoundParentheses
 
   // unary prefix operators
   | op=(EXPR_BANG|EXPR_SUB) expr       # ExprUnaryOp
