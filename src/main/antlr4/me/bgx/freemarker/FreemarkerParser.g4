@@ -54,11 +54,16 @@ directive
   ;
 
 directiveIf
-    : START_DIRECTIVE_TAG EXPR_IF tagExpr EXPR_EXIT_GT elements
-      (START_DIRECTIVE_TAG EXPR_ELSEIF EXPR_EXIT_GT elements )*
-      (START_DIRECTIVE_TAG EXPR_ELSE EXPR_EXIT_GT elements)?
+    : START_DIRECTIVE_TAG EXPR_IF tagExpr EXPR_EXIT_GT directiveIfTrueElements
+      (START_DIRECTIVE_TAG EXPR_ELSEIF tagExprElseIfs EXPR_EXIT_GT directiveIfElseIfElements)*
+      (START_DIRECTIVE_TAG EXPR_ELSE EXPR_EXIT_GT directiveIfElseElements)?
       END_DIRECTIVE_TAG EXPR_IF EXPR_EXIT_GT
     ;
+
+directiveIfTrueElements: elements;
+directiveIfElseIfElements: elements;
+directiveIfElseElements: elements;
+tagExprElseIfs: tagExpr;
 
 directiveAssign
   : START_DIRECTIVE_TAG EXPR_ASSIGN EXPR_SYMBOL EXPR_EQ tagExpr EXPR_EXIT_GT
