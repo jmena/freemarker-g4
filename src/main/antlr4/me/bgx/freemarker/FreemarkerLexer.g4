@@ -34,13 +34,13 @@ CONTENT             : ('<' | '$' | ~[$<]+) ;
 // MODES
 mode DOUBLE_QUOTE_STRING_MODE;
 DQS_EXIT       : '"' -> popMode;
-DQS_ESCAPE     : '\\' [\\"$n];
+DQS_ESCAPE     : '\\' [\\"'$n];
 DQS_ENTER_EXPR : '${' -> pushMode(EXPR_MODE);
 DQS_CONTENT    : (~[\\$"])+;
 
 mode SINGLE_QUOTE_STRING_MODE;
 SQS_EXIT       : '\'' -> popMode;
-SQS_ESCAPE     : '\\' [\\'$n];
+SQS_ESCAPE     : '\\' [\\"'$n];
 SQS_ENTER_EXPR : '${' -> pushMode(EXPR_MODE);
 SQS_CONTENT    : (~[\\$'])+;
 
