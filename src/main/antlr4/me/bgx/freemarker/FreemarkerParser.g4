@@ -105,10 +105,10 @@ directiveReturn
   ;
 
 directiveUser  // User defined directive
-  : START_USER_DIR_TAG EXPR_SYMBOL directiveUserId directiveUserParams directiveUserLoopParams EXPR_EXIT_DIV_GT
-  | START_USER_DIR_TAG EXPR_SYMBOL directiveUserId directiveUserParams directiveUserLoopParams EXPR_EXIT_GT
+  : START_USER_DIR_TAG directiveUserId directiveUserParams directiveUserLoopParams EXPR_EXIT_DIV_GT
+  | START_USER_DIR_TAG directiveUserId directiveUserParams directiveUserLoopParams EXPR_EXIT_GT
     elements
-    END_USER_DIR_TAG EXPR_SYMBOL directiveUserId EXPR_EXIT_GT
+    END_USER_DIR_TAG directiveUserId EXPR_EXIT_GT
   ;
 
 directiveUserId

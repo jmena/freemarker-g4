@@ -3,9 +3,14 @@ package me.bgx.freemarker;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 
 public class FmParserTest {
 
@@ -15,32 +20,39 @@ public class FmParserTest {
         parser.parse("<b>Hello world!</b>", "simpleTemplate");
     }
 
-    @Test(expected = FmParser.SyntaxError.class)
+    @Test
     public void invalid_template() {
-        final FmParser parser = new FmParser();
-        parser.parse("${ something", "simpleTemplate");
+        Assertions.assertThrows(FmParser.SyntaxError.class, () -> {
+            final FmParser parser = new FmParser();
+            parser.parse("${ something", "simpleTemplate");
+        });
     }
 
-    @Test
-    public void all_templates() throws IOException {
-
+    @TestFactory
+    public List<DynamicTest> all_templates() throws IOException {
         final String templates = readTemplate("");
 
+        List<DynamicTest> lstTests = new ArrayList<>();
+
         for (final String fileName : templates.split("\n")) {
-            System.out.println("---------------------------------------------------");
-            System.out.println("Parsing: '" + fileName + "'");
-            final String template = readTemplate(fileName);
-            System.out.println(template);
+            lstTests.add(DynamicTest.dynamicTest(fileName, () -> {
+                System.out.println("---------------------------------------------------");
+                System.out.println("Parsing: '" + fileName + "'");
+                final String template = readTemplate(fileName);
+                System.out.println(template);
 
-            // parse
-            final FmParser parser = new FmParser();
-            String tree = parser.parse(template, fileName);
+                // parse
+                final FmParser parser = new FmParser();
+                String tree = parser.parse(template, fileName);
 
-            // output
-            System.out.println("------");
-            System.out.println(tree);
-            System.out.println();
+                // output
+                System.out.println("------ tree ------");
+                System.out.println(tree);
+                System.out.println();
+            }));
         }
+
+        return lstTests;
     }
 
     private String readTemplate(final String resource) throws IOException {

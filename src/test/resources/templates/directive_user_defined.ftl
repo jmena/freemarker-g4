@@ -3,7 +3,7 @@
     ${p1} <#nested 2>
     ${p1} <#nested 3>
 </#macro>
-<@do_thrice1 "7"; x> ${x} Anything. </@do_thricex>
+<@do_thrice1 "7"; x> ${x} Anything. </@do_thrice1>
 
 <#macro do_thrice>
     <#nested 1>
@@ -24,3 +24,7 @@
 <@something 5, 7, 8>
 </@something>
 
+<@something 5 7 8>
+</@something>
+
+<@a.b.c 5 7 8 />
