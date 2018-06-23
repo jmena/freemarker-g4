@@ -31,9 +31,7 @@ public class FmParserTest {
     @TestFactory
     public List<DynamicTest> all_templates() throws IOException {
         final String templates = readTemplate("");
-
-        List<DynamicTest> lstTests = new ArrayList<>();
-
+        final List<DynamicTest> lstTests = new ArrayList<>();
         for (final String fileName : templates.split("\n")) {
             lstTests.add(DynamicTest.dynamicTest(fileName, () -> {
                 System.out.println("---------------------------------------------------");
@@ -51,7 +49,6 @@ public class FmParserTest {
                 System.out.println();
             }));
         }
-
         return lstTests;
     }
 
