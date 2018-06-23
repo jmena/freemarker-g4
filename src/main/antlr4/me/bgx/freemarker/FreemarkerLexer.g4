@@ -21,9 +21,12 @@ SOFTWARE.
 */
 lexer grammar FreemarkerLexer;
 
+// CHANNELS:
+// 1. comments
+// 2. ignored spaces in expressions
 
 // STARTING GRAMMAR RULES
-COMMENT             : COMMENT_FRAG -> skip;
+COMMENT             : COMMENT_FRAG -> channel(1);
 START_DIRECTIVE_TAG : '<#' -> pushMode(EXPR_MODE);
 END_DIRECTIVE_TAG   : '</#' -> pushMode(EXPR_MODE);
 START_USER_DIR_TAG  : '<@' -> pushMode(EXPR_MODE);
@@ -60,28 +63,39 @@ EXPR_MACRO            : 'macro';
 EXPR_NESTED           : 'nested';
 EXPR_RETURN           : 'return';
 // Other symbols
+EXPR_LT_SYM           : '<';
+EXPR_LT_STR           : 'lt';
+EXPR_LTE_SYM          : '<=';
+EXPR_LTE_STR          : 'lte';
+// EXPR_GT_SYM           : '>'; // Unsupported. Already defined as EXPR_EXIT_GT
+EXPR_GT_STR           : 'gt';
+EXPR_GTE_SYM          : '>=';
+EXPR_GTE_STR          : 'gte';
 EXPR_NUM              : NUMBER;
 EXPR_EXIT_R_BRACE     : '}' -> popMode;
 EXPR_EXIT_GT          : '>' -> popMode;
 EXPR_EXIT_DIV_GT      : '/>' -> popMode;
-EXPR_WS               : [ \n]+ -> skip;
-EXPR_COMENT           : COMMENT_FRAG -> skip;
+EXPR_WS               : [ \n]+ -> channel(2);
+EXPR_COMENT           : COMMENT_FRAG -> channel(1);
 EXPR_STRUCT           : '{'+ -> pushMode(EXPR_MODE);
 EXPR_DOUBLE_STR_START : '"' -> pushMode(DOUBLE_QUOTE_STRING_MODE);
 EXPR_SINGLE_STR_START : '\'' -> pushMode(SINGLE_QUOTE_STRING_MODE);
 EXPR_AT               : '@';
+EXPR_DBL_QUESTION     : '??';
 EXPR_QUESTION         : '?';
 EXPR_BANG             : '!';
-EXPR_EQ               : '=';
 EXPR_ADD              : '+';
 EXPR_SUB              : '-';
 EXPR_MUL              : '*';
 EXPR_DIV              : '/';
+EXPR_MOD              : '%';
 EXPR_L_PAREN          : '(';
 EXPR_R_PAREN          : ')';
 EXPR_L_SQ_PAREN       : '[';
 EXPR_R_SQ_PAREN       : ']';
 EXPR_COMPARE_EQ       : '==';
+EXPR_EQ               : '=';
+EXPR_COMPARE_NEQ      : '!=';
 EXPR_LOGICAL_AND      : '&&';
 EXPR_LOGICAL_OR       : '||';
 EXPR_DOT              : '.';

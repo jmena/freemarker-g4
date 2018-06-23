@@ -74,10 +74,13 @@ directiveAssign
 
 directiveList
   : START_DIRECTIVE_TAG EXPR_LIST tagExpr EXPR_AS (value=EXPR_SYMBOL | key=EXPR_SYMBOL EXPR_COMMA value=EXPR_SYMBOL) EXPR_EXIT_GT
-    bodyElements=elements
-    (START_DIRECTIVE_TAG EXPR_ELSE EXPR_EXIT_GT elseElements=elements)?
+    directiveListBodyElements
+    (START_DIRECTIVE_TAG EXPR_ELSE EXPR_EXIT_GT directiveListElseElements)?
     END_DIRECTIVE_TAG EXPR_LIST EXPR_EXIT_GT
   ;
+
+directiveListBodyElements: elements;
+directiveListElseElements: elements;
 
 directiveInclude
   : START_DIRECTIVE_TAG EXPR_INCLUDE string EXPR_EXIT_GT
@@ -101,16 +104,22 @@ directiveReturn
   : START_DIRECTIVE_TAG EXPR_RETURN EXPR_EXIT_GT
   ;
 
-directiveUser
-  : START_USER_DIR_TAG EXPR_SYMBOL (EXPR_DOT EXPR_SYMBOL)* directiveUserParams EXPR_EXIT_DIV_GT     # DirUserEmptyBody
-  | START_USER_DIR_TAG EXPR_SYMBOL (EXPR_DOT EXPR_SYMBOL)* directiveUserParams EXPR_EXIT_GT
+directiveUser  // User defined directive
+  : START_USER_DIR_TAG EXPR_SYMBOL directiveUserId directiveUserParams directiveUserLoopParams EXPR_EXIT_DIV_GT
+  | START_USER_DIR_TAG EXPR_SYMBOL directiveUserId directiveUserParams directiveUserLoopParams EXPR_EXIT_GT
     elements
-    END_USER_DIR_TAG EXPR_SYMBOL (EXPR_DOT EXPR_SYMBOL)* EXPR_EXIT_GT                   # DirUserWithBody
+    END_USER_DIR_TAG EXPR_SYMBOL directiveUserId EXPR_EXIT_GT
   ;
 
+directiveUserId
+  : EXPR_SYMBOL (EXPR_DOT EXPR_SYMBOL)*
+  ;
 directiveUserParams
-  : (EXPR_SYMBOL EXPR_EQ expr ( EXPR_SEMICOLON EXPR_SYMBOL (EXPR_COMMA EXPR_SYMBOL)* )?  )* # DirUserParamsNamed
-  | (expr (EXPR_COMMA expr)*)? ( EXPR_SEMICOLON EXPR_SYMBOL (EXPR_COMMA EXPR_SYMBOL)* )?    # DirUserParamsPositional
+  : (EXPR_SYMBOL EXPR_EQ expr)*
+  | (expr (EXPR_COMMA? expr)*)?
+  ;
+directiveUserLoopParams
+  : ( EXPR_SEMICOLON EXPR_SYMBOL (EXPR_COMMA EXPR_SYMBOL)* )?
   ;
 
 tagExpr: expr;
@@ -123,41 +132,48 @@ string
   ;
 
 expr
-  : EXPR_NUM       # NumberExpr
-  | EXPR_SYMBOL    # SymbolExpr
-  | string         # StringExpr
-  | struct         # StructExpr
+  : EXPR_NUM                 # NumberExpr
+  | (EXPR_TRUE|EXPR_FALSE)   # BoolExpr
+  | EXPR_SYMBOL              # SymbolExpr
+  | string                   # StringExpr
+  | struct                   # StructExpr
+
+  // Precedence of operators defined in:
+  // https://freemarker.apache.org/docs/dgui_template_exp.html#dgui_template_exp_precedence
 
   // highest precedence operators
-  | expr (EXPR_DOT EXPR_SYMBOL)+                                               # ExprDotAccess
-  | expr EXPR_QUESTION EXPR_QUESTION                                           # ExprMissingTest
-  | expr EXPR_QUESTION EXPR_SYMBOL (EXPR_L_PAREN functionParams EXPR_R_PAREN)? # ExprBuiltIn
-  | left=expr EXPR_BANG right=expr?                                            # ExprDefault
-  | expr EXPR_L_PAREN functionParams EXPR_R_PAREN                              # ExprFunctionCall
-  | expr EXPR_L_SQ_PAREN expr EXPR_R_SQ_PAREN                                  # ExprSquareParentheses
-  | EXPR_L_PAREN expr EXPR_R_PAREN                                             # ExprRoundParentheses
-
-  // unary prefix operators
-  | op=(EXPR_BANG|EXPR_SUB) expr       # ExprUnaryOp
-
-  // math operators
-  | expr op=(EXPR_MUL|EXPR_DIV) expr   # ExprMulDiv
-  | expr op=(EXPR_ADD|EXPR_SUB) expr   # ExprAddSub
-
-  // relational operators
-
-  // boolean equality
-  | expr (EXPR_COMPARE_EQ) expr        # ExprBoolEq
-
-  // logical "and" an "or" operators
-  | expr EXPR_LOGICAL_AND expr         # ExprBoolAnd
-  | expr EXPR_LOGICAL_OR expr          # ExprBoolOr
+  | expr (EXPR_DOT EXPR_SYMBOL)+                            # ExprDotAccess
+  | expr EXPR_DBL_QUESTION                                  # ExprMissingTest
+  | expr EXPR_QUESTION EXPR_SYMBOL
+    (EXPR_L_PAREN functionParams EXPR_R_PAREN)?             # ExprBuiltIn
+  | left=expr EXPR_BANG right=expr?                         # ExprDefault
+  | expr EXPR_L_PAREN functionParams EXPR_R_PAREN           # ExprFunctionCall
+  | expr EXPR_L_SQ_PAREN expr EXPR_R_SQ_PAREN               # ExprSquareParentheses
+  | EXPR_L_PAREN expr EXPR_R_PAREN                          # ExprRoundParentheses
+  /* ... */                                                                            // missing: numerical ranges
+  | op=(EXPR_BANG|EXPR_SUB) expr                            # ExprUnaryOp              // unary prefix operators
+  | expr op=(EXPR_MUL|EXPR_DIV|EXPR_MOD) expr               # ExprMulDivMod            // multiplicative operators
+  | expr op=(EXPR_ADD|EXPR_SUB) expr                        # ExprAddSub               // additive operators
+  | expr booleanRelationalOperator expr                     # ExprBoolRelational       // relational operators
+  | expr (EXPR_COMPARE_EQ|EXPR_COMPARE_NEQ|EXPR_EQ) expr    # ExprBoolEq               // equality operators
+  | expr EXPR_LOGICAL_AND expr                              # ExprBoolAnd              // logical "and" operator
+  | expr EXPR_LOGICAL_OR expr                               # ExprBoolOr               // logical "or" operator
   ;
 
 functionParams
   : /* empty */
   | expr
   | expr (EXPR_COMMA expr)+
+  ;
+
+booleanRelationalOperator
+  : EXPR_LT_SYM
+  | EXPR_LT_STR
+  | EXPR_LTE_SYM
+  | EXPR_LTE_STR
+  | EXPR_GT_STR
+  | EXPR_GTE_SYM
+  | EXPR_GTE_STR
   ;
 
 struct
